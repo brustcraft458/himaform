@@ -1,4 +1,5 @@
-
+// Global
+var globalCounter = 0
 
 // Edit Text
 console.log("hello")
@@ -23,25 +24,32 @@ document.querySelectorAll(".form-data-template").forEach(element => {
     const fname = element.getAttribute('id')
     const childItem = element.querySelector(`#${fname}-section`)
     const btnAddItem = element.querySelector(`#${fname}-button-add`)
-    console.log(fname)
+    const btnSubmit = element.querySelector(`#${fname}-button-submit`)
 
-    if (btnAddItem) {
-        btnAddItem.addEventListener("click", () => {
-            elementFormAddItem(childItem, fname)
-        })
+    if (!btnAddItem || !childItem || !btnSubmit) {
+        return
     }
 
-    if (childItem) {
-        Array.from(childItem.children).forEach(elem2 => {
-            elementFormItem(elem2);
-        });
-    }
+    // Add Item
+    btnAddItem.addEventListener("click", () => {
+        elementFormAddItem(childItem, fname)
+    })
+
+    // Item Children
+    Array.from(childItem.children).forEach(elem2 => {
+        elementFormItem(elem2);
+    });
+
+    // Submit Form
+    btnSubmit.addEventListener('click', () => {
+        elementFormSubmit(element, childItem, fname)
+    })
 })
 
 function elementFormAddItem(parrent, fname) {
     const newElm = document.createElement("div")
-    const uuid = generateUUID()
-    const uname = `${fname}-${uuid}`
+    const inum = generateIncrementNumber()
+    const uname = `${fname}-${inum}`
 
     newElm.classList.add('form-group')
     newElm.classList.add('my-2')
@@ -50,22 +58,23 @@ function elementFormAddItem(parrent, fname) {
     newElm.setAttribute('id', uname)
 
     newElm.innerHTML = `
-        <div class="align-self-center p-2 shadow-sm rounded mt-4 d-none" id="${uname}-image">
-            <img src="assets/img/qristes.png" alt="">
-        </div>
-        <div class="d-flex flex-row gap-1">
-            <label class="col-form-label edit-text rounded" id="${uname}-label" name="none">Text:</label>
-            <i class="bi bi-pencil-fill mt-1 fs-13px"></i>
-        </div>
-        <div class="d-flex flex-row gap-2">
-            <input type="text" class="form-control" id="${uname}-input" value="Hello World" disabled>
-            <select class="form-control w-50" id="${uname}-type" name="none">
-                <option value="string">String</option>
-                <option value="number">Number</option>
-                <option value="file">File</option>
-                <option value="payment">Payment</option>
-            </select>
-            <button type="button" class="btn btn-outline-danger" id="${uname}-delete"><i class="bi bi-trash"></i></button>
+        <div class="form-group my-2 d-flex flex-column" id="${uname}">
+            <div class="align-self-center p-2 shadow-sm rounded mt-4 d-none" id="${uname}-image">
+            </div>
+            <div class="d-flex flex-row gap-1">
+                <label class="col-form-label edit-text rounded" id="${uname}-label">Text 1:</label>
+                <i class="bi bi-pencil-fill mt-1 fs-13px"></i>
+            </div>
+            <div class="d-flex flex-row gap-2">
+                <input type="text" class="form-control" id="${uname}-input" value="Hello World" disabled>
+                <select class="form-control w-50" id="${uname}-type">
+                    <option value="string">String</option>
+                    <option value="number">Number</option>
+                    <option value="file">File</option>
+                    <option value="payment">Payment</option>
+                </select>
+                <button type="button" class="btn btn-outline-danger" id="${uname}-delete"><i class="bi bi-trash"></i></button>
+            </div>
         </div>
     `
 
@@ -77,16 +86,56 @@ function elementFormAddItem(parrent, fname) {
     parrent.appendChild(newElm)
 }
 
-function elementFormItem(element) {
-    const iname = element.getAttribute('id')
-    const elmLabel = element.querySelector(`#${iname}-label`)
-    const elmImage = element.querySelector(`#${iname}-image`)
-    const elmInput = element.querySelector(`#${iname}-input`)
-    const elmType = element.querySelector(`#${iname}-type`)
-    const btnDelete = element.querySelector(`#${iname}-delete`)
+function elementFormSubmit(root, parrent, fname) {
+    const elmTitle = root.querySelector(`#${fname}-title`)
+    const elmForm = root.querySelector('form')
 
-    // First
-    elmType.name = `form_data_${elmLabel.innerText}`
+    let jsonData = {
+        title: elmTitle.innerText,
+        section_list: []
+    }
+
+    // Get Data Children
+    Array.from(parrent.children).forEach(element => {
+        const uname = element.getAttribute('id')
+        const elmLabel = element.querySelector(`#${uname}-label`)
+        const elmImage = element.querySelector(`#${uname}-image`)
+        const elmInput = element.querySelector(`#${uname}-input`)
+        const elmType = element.querySelector(`#${uname}-type`)
+        const btnDelete = element.querySelector(`#${uname}-delete`)
+
+        let newData = {
+            label: elmLabel.innerText,
+            type: elmType.value
+        }
+
+        const inpImage = elmImage.querySelector("input")
+        if (inpImage) {
+            newData['image'] = inpImage.name
+        }
+
+        jsonData.section_list.push(newData)
+    })
+
+    // Process
+    const jsonInput = document.createElement("input")
+    jsonInput.setAttribute('type', 'text')
+    jsonInput.setAttribute('name', 'json-data')
+    jsonInput.setAttribute('value', JSON.stringify(jsonData))
+    jsonInput.classList.add('d-none')
+
+    // Submit
+    elmForm.appendChild(jsonInput)
+    elmForm.submit()
+}
+
+function elementFormItem(element) {
+    const uname = element.getAttribute('id')
+    const elmLabel = element.querySelector(`#${uname}-label`)
+    const elmImage = element.querySelector(`#${uname}-image`)
+    const elmInput = element.querySelector(`#${uname}-input`)
+    const elmType = element.querySelector(`#${uname}-type`)
+    const btnDelete = element.querySelector(`#${uname}-delete`)
 
     // Action
     elmType.addEventListener('change', function(event) {
@@ -104,9 +153,16 @@ function elementFormItem(element) {
         }
 
         if (selected == 'payment') {
+            elmImage.innerHTML = `
+                <img class="image" src="../assets/img/qristes.png" alt="">
+                <input type="file" class="image-input d-none" name="${uname}-image" accept="image/png, image/jpeg">
+            `
             elmImage.classList.remove('d-none')
+            // actionElmImage()
+
         } else {
             elmImage.classList.add('d-none')
+            elmImage.innerHTML = ''
         }
     })
 
@@ -114,16 +170,9 @@ function elementFormItem(element) {
         element.innerHTML = ''
         element.remove()
     })
-
-    elmLabel.addEventListener('input', () => {
-        elmType.name = `form_data_${elmLabel.innerText}`
-    })
 }
 
-function generateUUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16 | 0,
-            v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
+function generateIncrementNumber() {
+    globalCounter += 1
+    return globalCounter
 }
