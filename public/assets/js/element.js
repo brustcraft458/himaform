@@ -137,9 +137,26 @@ class ElementFormItem {
             this.onInputChange(event.target.value)
         })
 
+        this.initImage()
+
         this.btnDelete.addEventListener('click', () => {
             this.onButtonDelete()
         })
+    }
+
+    initImage() {
+        const elmInput = this.elmImage.querySelector('input')
+        const elmImg = this.elmImage.querySelector('img')
+
+        if (elmImg && elmInput) {
+            elmImg.addEventListener('click', () => {
+                elmInput.click();
+            })
+
+            elmInput.addEventListener('change', (event) => {
+                this.onImageChange(event.target.files[0], elmImg)
+            })
+        }
     }
 
     onInputChange(selected) {
@@ -160,11 +177,21 @@ class ElementFormItem {
                 <input type="file" class="image-input d-none" name="${this.uname}-image" accept="image/png, image/jpeg">
             `
             this.elmImage.classList.remove('d-none')
-            // actionElmImage()
+            this.initImage()
 
         } else {
             this.elmImage.classList.add('d-none')
             this.elmImage.innerHTML = ''
+        }
+    }
+
+    onImageChange(file, elmImg) {
+        if (file) {
+            const reader = new FileReader()
+            reader.onload = function(e) {
+                elmImg.src = e.target.result
+            }
+            reader.readAsDataURL(file)
         }
     }
 
