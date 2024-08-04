@@ -142,21 +142,20 @@
                             </div>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form action="{{ url('/form/template')}}" method="POST">
+                        <form id="form-add" action="{{ url('/form/template')}}" method="POST">
                             @csrf
                             <div class="modal-body">
                                 <div id="form-add-section">
                                     <div class="form-group my-2 d-flex flex-column" id="form-add-s1">
                                         <div class="align-self-center p-2 shadow-sm rounded mt-4 d-none" id="form-add-s1-image">
-                                            <img src="assets/img/qristes.png" alt="">
                                         </div>
                                         <div class="d-flex flex-row gap-1">
-                                            <label class="col-form-label edit-text rounded" id="form-add-s1-label" name="none">Text:</label>
+                                            <label class="col-form-label edit-text rounded" id="form-add-s1-label">Text 1:</label>
                                             <i class="bi bi-pencil-fill mt-1 fs-13px"></i>
                                         </div>
                                         <div class="d-flex flex-row gap-2">
                                             <input type="text" class="form-control" id="form-add-s1-input" value="Hello World" disabled>
-                                            <select class="form-control w-50" id="form-add-s1-type" name="none">
+                                            <select class="form-control w-50" id="form-add-s1-type">
                                                 <option value="string">String</option>
                                                 <option value="number">Number</option>
                                                 <option value="file">File</option>
@@ -172,7 +171,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                <button type="submit" class="btn btn-primary" name="add-data">Simpan</button>
+                                <button type="button" class="btn btn-primary" id="form-add-button-submit">Simpan</button>
                             </div>
                         </form>
                     </div>

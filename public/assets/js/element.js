@@ -1,129 +1,229 @@
-
+// Global
+var globalCounter = 0
 
 // Edit Text
-console.log("hello")
-document.querySelectorAll(".edit-text").forEach(element => {
-    elementEditText(element);
-})
+class ElementEditText {
+    constructor(element) {
+        this.elmMain = element
 
-function elementEditText(element) {
-    element.setAttribute("contenteditable", "true")
-    element.setAttribute("spellcheck", "false")
+        this.init()
+    }
 
-    element.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-        }
-    })
+    init() {
+        this.elmMain.setAttribute("contenteditable", "true")
+        this.elmMain.setAttribute("spellcheck", "false")
+
+        this.elmMain.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+            }
+        })
+    }
 }
 
+// Form
+class ElementForm {
+    constructor(element) {
+        this.elmRoot = element
+        this.fname = element.getAttribute('id')
+        this.elmChildItem = element.querySelector(`#${this.fname}-section`)
+        this.btnAddItem = element.querySelector(`#${this.fname}-button-add`)
+        this.btnSubmit = element.querySelector(`#${this.fname}-button-submit`)
+        this.memItemList = []
 
-// Form Action
-document.querySelectorAll(".form-data-template").forEach(element => {
-    const fname = element.getAttribute('id')
-    const childItem = element.querySelector(`#${fname}-section`)
-    const btnAddItem = element.querySelector(`#${fname}-button-add`)
-    console.log(fname)
+        this.init()
+    }
 
-    if (btnAddItem) {
-        btnAddItem.addEventListener("click", () => {
-            elementFormAddItem(childItem, fname)
+    init() {
+        // Add Item
+        this.btnAddItem.addEventListener("click", () => {
+            this.onButtonAddItem()
+        })
+
+        // Item Children
+        for (const child of this.elmChildItem.children) {
+            this.memItemList.push(new ElementFormItem(child))
+        }
+
+        // Submit Form
+        this.btnSubmit.addEventListener('click', () => {
+            this.onButtonSubmit()
         })
     }
 
-    if (childItem) {
-        Array.from(childItem.children).forEach(elem2 => {
-            elementFormItem(elem2);
-        });
+    onButtonAddItem() {
+        const newElm = document.createElement("div")
+        const inum = generateIncrementNumber()
+        const uname = `${this.fname}-${inum}`
+
+        newElm.classList.add('form-group')
+        newElm.classList.add('my-2')
+        newElm.classList.add('d-flex')
+        newElm.classList.add('flex-column')
+        newElm.setAttribute('id', uname)
+
+        newElm.innerHTML = `
+            <div class="form-group my-2 d-flex flex-column" id="${uname}">
+                <div class="align-self-center p-2 shadow-sm rounded mt-4 d-none" id="${uname}-image">
+                </div>
+                <div class="d-flex flex-row gap-1">
+                    <label class="col-form-label edit-text rounded" id="${uname}-label">Text 1:</label>
+                    <i class="bi bi-pencil-fill mt-1 fs-13px"></i>
+                </div>
+                <div class="d-flex flex-row gap-2">
+                    <input type="text" class="form-control" id="${uname}-input" value="Hello World" disabled>
+                    <select class="form-control w-50" id="${uname}-type">
+                        <option value="string">String</option>
+                        <option value="number">Number</option>
+                        <option value="file">File</option>
+                        <option value="payment">Payment</option>
+                    </select>
+                    <button type="button" class="btn btn-outline-danger" id="${uname}-delete"><i class="bi bi-trash"></i></button>
+                </div>
+            </div>
+        `
+
+        // Assign
+        const editText = newElm.querySelector(".edit-text")
+        new ElementEditText(editText)
+        this.memItemList.push(new ElementFormItem(newElm))
+
+        this.elmChildItem.appendChild(newElm)
     }
-})
 
-function elementFormAddItem(parrent, fname) {
-    const newElm = document.createElement("div")
-    const uuid = generateUUID()
-    const uname = `${fname}-${uuid}`
+    onButtonSubmit() {
+        const elmTitle = this.elmRoot.querySelector(`#${this.fname}-title`)
+        const elmForm = this.elmRoot.querySelector('form')
 
-    newElm.classList.add('form-group')
-    newElm.classList.add('my-2')
-    newElm.classList.add('d-flex')
-    newElm.classList.add('flex-column')
-    newElm.setAttribute('id', uname)
+        let jsonData = {
+            title: elmTitle.innerText,
+            section_list: []
+        }
 
-    newElm.innerHTML = `
-        <div class="align-self-center p-2 shadow-sm rounded mt-4 d-none" id="${uname}-image">
-            <img src="assets/img/qristes.png" alt="">
-        </div>
-        <div class="d-flex flex-row gap-1">
-            <label class="col-form-label edit-text rounded" id="${uname}-label" name="none">Text:</label>
-            <i class="bi bi-pencil-fill mt-1 fs-13px"></i>
-        </div>
-        <div class="d-flex flex-row gap-2">
-            <input type="text" class="form-control" id="${uname}-input" value="Hello World" disabled>
-            <select class="form-control w-50" id="${uname}-type" name="none">
-                <option value="string">String</option>
-                <option value="number">Number</option>
-                <option value="file">File</option>
-                <option value="payment">Payment</option>
-            </select>
-            <button type="button" class="btn btn-outline-danger" id="${uname}-delete"><i class="bi bi-trash"></i></button>
-        </div>
-    `
+        // Get Data Children
+        this.memItemList.forEach(item => {
+            jsonData.section_list.push(item.toJson())
+        })
 
-    // Assign
-    const editText = newElm.querySelector(".edit-text")
-    elementEditText(editText)
-    elementFormItem(newElm)
+        // Process
+        const jsonInput = document.createElement("input")
+        jsonInput.setAttribute('type', 'text')
+        jsonInput.setAttribute('name', 'json-data')
+        jsonInput.setAttribute('value', JSON.stringify(jsonData))
+        jsonInput.classList.add('d-none')
 
-    parrent.appendChild(newElm)
+        // Submit
+        elmForm.appendChild(jsonInput)
+        elmForm.submit()
+    }
 }
 
-function elementFormItem(element) {
-    const iname = element.getAttribute('id')
-    const elmLabel = element.querySelector(`#${iname}-label`)
-    const elmImage = element.querySelector(`#${iname}-image`)
-    const elmInput = element.querySelector(`#${iname}-input`)
-    const elmType = element.querySelector(`#${iname}-type`)
-    const btnDelete = element.querySelector(`#${iname}-delete`)
+class ElementFormItem {
+    constructor(element) {
+        this.elmMain = element
+        this.uname = element.getAttribute('id')
+        this.elmLabel = element.querySelector(`#${this.uname}-label`)
+        this.elmImage = element.querySelector(`#${this.uname}-image`)
+        this.elmInput = element.querySelector(`#${this.uname}-input`)
+        this.elmType = element.querySelector(`#${this.uname}-type`)
+        this.btnDelete = element.querySelector(`#${this.uname}-delete`)
 
-    // First
-    elmType.name = `form_data_${elmLabel.innerText}`
+        this.init()
+    }
 
-    // Action
-    elmType.addEventListener('change', function(event) {
-        const selected = event.target.value;
+    init() {
+        // Action
+        this.elmType.addEventListener('change', (event) => {
+            this.onInputChange(event.target.value)
+        })
 
+        this.initImage()
+
+        this.btnDelete.addEventListener('click', () => {
+            this.onButtonDelete()
+        })
+    }
+
+    initImage() {
+        const elmInput = this.elmImage.querySelector('input')
+        const elmImg = this.elmImage.querySelector('img')
+
+        if (elmImg && elmInput) {
+            elmImg.addEventListener('click', () => {
+                elmInput.click();
+            })
+
+            elmInput.addEventListener('change', (event) => {
+                this.onImageChange(event.target.files[0], elmImg)
+            })
+        }
+    }
+
+    onInputChange(selected) {
         // Option
         if (selected === 'string') {
-            elmInput.type = "text"
-            elmInput.value = "Hello Word"
+            this.elmInput.type = "text"
+            this.elmInput.value = "Hello Word"
         } else if (selected === 'number') {
-            elmInput.type = "number"
-            elmInput.value = '1234456789'
+            this.elmInput.type = "number"
+            this.elmInput.value = '1234456789'
         } else if (selected === 'file' || selected == 'payment') {
-            elmInput.type = "file"
+            this.elmInput.type = "file"
         }
 
         if (selected == 'payment') {
-            elmImage.classList.remove('d-none')
+            this.elmImage.innerHTML = `
+                <img class="image" src="../assets/img/qristes.png" alt="">
+                <input type="file" class="image-input d-none" name="${this.uname}-image" accept="image/png, image/jpeg">
+            `
+            this.elmImage.classList.remove('d-none')
+            this.initImage()
+
         } else {
-            elmImage.classList.add('d-none')
+            this.elmImage.classList.add('d-none')
+            this.elmImage.innerHTML = ''
         }
-    })
+    }
 
-    btnDelete.addEventListener('click', () => {
-        element.innerHTML = ''
-        element.remove()
-    })
+    onImageChange(file, elmImg) {
+        if (file) {
+            const reader = new FileReader()
+            reader.onload = function(e) {
+                elmImg.src = e.target.result
+            }
+            reader.readAsDataURL(file)
+        }
+    }
 
-    elmLabel.addEventListener('input', () => {
-        elmType.name = `form_data_${elmLabel.innerText}`
-    })
+    onButtonDelete() {
+        this.elmMain.innerHTML = ''
+        this.elmMain.remove()
+    }
+
+    toJson() {
+        let newData = {
+            label: this.elmLabel.innerText,
+            type: this.elmType.value
+        }
+
+        const inpImage = this.elmImage.querySelector("input")
+        if (inpImage) {
+            newData['image'] = inpImage.name
+        }
+
+        return newData
+    }
 }
 
-function generateUUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16 | 0,
-            v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
+// Assign
+document.querySelectorAll(".edit-text").forEach(element => {
+    new ElementEditText(element)
+})
+document.querySelectorAll(".form-data-template").forEach(element => {
+    new ElementForm(element)
+})
+
+function generateIncrementNumber() {
+    globalCounter += 1
+    return globalCounter
 }
