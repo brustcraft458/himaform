@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FormTemplateController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,16 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/form/template', function () {
-    return view('form.template', [
-        'jadwal_list' => [
-            [
-                'id_jadwal' => '0',
-                'nama' => 'asdad',
+// Get
+Route::get('/form/template', [UserController::class, 'index'])->name('form_template');
+Route::view('/login', [UserController::class, 'index'])->name('login');
 
-            ]
-        ]
-    ]);
-})->name('form_template');
-
+// Post
 Route::post('/form/template', [FormTemplateController::class, 'store']);
+Route::post('/login', [UserController::class, 'login']);

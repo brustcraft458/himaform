@@ -6,11 +6,20 @@ use Illuminate\Http\Request;
 
 class FormTemplateController extends Controller
 {
+    function index() {
+        return view('form.template', [
+            'jadwal_list' => [
+                [
+                    'id_jadwal' => '0',
+                    'nama' => 'asdad',
+
+                ]
+            ]
+        ]);
+    }
+
     function store(Request $request) {
         $jsonData = $request->input('json-data');
         return var_dump($jsonData);
-        //$request->session()->flash('action_message', print_r($jsonData));
-
-        // return redirect()->route('form_template');
     }
 }
