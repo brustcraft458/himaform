@@ -16,8 +16,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Get
-Route::get('/form/template', [UserController::class, 'index'])->name('form_template');
-Route::view('/login', [UserController::class, 'index'])->name('login');
+Route::get('/', fn() => redirect()->route('login'));
+Route::get('/form/template', [FormTemplateController::class, 'index'])->name('form_template');
+Route::get('/login', [UserController::class, 'index'])->name('login');
 
 // Post
 Route::post('/form/template', [FormTemplateController::class, 'store']);
