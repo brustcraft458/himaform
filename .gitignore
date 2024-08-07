@@ -16,6 +16,4 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-storage/framework/cache/*
-bootstrap/cache/*
 composer.lock
