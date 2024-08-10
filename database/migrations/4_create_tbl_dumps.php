@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('tbl_dumps', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->unique();
-            $table->string('username')->unique();
-            $table->string('password');
-            $table->enum('role', ['admin', 'user']);
             $table->timestamps();
+            $table->unsignedBigInteger('id_template');
+
+            $table->foreign('id_template')->references('id')->on('tbl_template')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('tbl_dumps');
     }
 };
