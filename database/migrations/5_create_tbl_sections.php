@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('departments', function (Blueprint $table) {
+        Schema::create('tbl_sections', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('fullname');
-            $table->string('url');
+            $table->string('label');
+            $table->string('type');
+            $table->string('image');
+            $table->unsignedBigInteger('id_template');
             $table->timestamps();
+
+            $table->foreign('id_template')->references('id')->on('tbl_template')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('departments');
+        Schema::dropIfExists('tbl_sections');
     }
 };
