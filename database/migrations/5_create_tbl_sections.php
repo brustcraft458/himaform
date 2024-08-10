@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('tbl_sections', function (Blueprint $table) {
             $table->id();
             $table->string('label');
-            $table->string('type');
-            $table->string('image');
+            $table->enum('type', ['number', 'text', 'file', 'payment']);
+            $table->string('image')->nullable();
             $table->unsignedBigInteger('id_template');
             $table->timestamps();
 
