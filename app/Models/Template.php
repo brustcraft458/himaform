@@ -14,6 +14,8 @@ class Template extends Model
     protected $fillable = [
         'title',
         'visibility',
+        'total_viewed',
+        'total_respondent',
         'id_user',
         'id_department'
     ];

@@ -14,7 +14,7 @@ class DepartmentSeeder extends Seeder
     public function run(): void
     {
         Department::firstOrCreate([
-            'name' => 'Penristek',
+            'name' => 'penristek',
             'full_name' => 'Pendidikan Riset dan Teknologi',
             'url' => 'example.com'
         ]);
