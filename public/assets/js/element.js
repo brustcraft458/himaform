@@ -73,7 +73,7 @@ class ElementForm {
                 <div class="d-flex flex-row gap-2">
                     <input type="text" class="form-control" id="${uname}-input" value="Hello World" disabled>
                     <select class="form-control w-50" id="${uname}-type">
-                        <option value="string">String</option>
+                        <option value="text">Text</option>
                         <option value="number">Number</option>
                         <option value="file">File</option>
                         <option value="payment">Payment</option>
@@ -161,7 +161,7 @@ class ElementFormItem {
 
     onInputChange(selected) {
         // Option
-        if (selected === 'string') {
+        if (selected === 'text') {
             this.elmInput.type = "text"
             this.elmInput.value = "Hello Word"
         } else if (selected === 'number') {

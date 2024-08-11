@@ -15,7 +15,9 @@ return new class extends Migration
         Schema::create('tbl_template', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('visibility');
+            $table->string('visibility')->default('private');
+            $table->unsignedBigInteger('total_viewed')->default(0);
+            $table->unsignedBigInteger('total_respondent')->default(0);
             $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_department');
             $table->timestamps();

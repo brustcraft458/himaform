@@ -20,7 +20,7 @@
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Template</h1>
+            <h1>Formulir</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="../dashboard/dashboard.php">Formulir</a></li>
@@ -31,7 +31,8 @@
 
         @if (session('action_message'))
             <div class="alert alert-secondary">
-                {{ session('action_message') }}
+                <p>{{ session('action_message') }}</p>
+                <p>{{ session('action_data') }}</p>
             </div>
         @endif
 
@@ -48,22 +49,27 @@
                             <table class="table datatable">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Nama</th>
+                                        <th scope="col">Judul</th>
+                                        <th scope="col">Aktivitas</th>
                                         <th scope="col">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($jadwal_list as $no => $jadwal): ?>
-                                    <tr>
-                                        <td>
-                                            <?= $jadwal['nama'] ?>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#edit-data-<?= $no ?>"><i class="bi bi-pencil"></i></button>
-                                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-data-<?= $no ?>"><i class="bi bi-trash"></i></button>
-                                        </td>
-                                    </tr>
-                                    <?php endforeach; ?>
+                                    @foreach ($form_list as $no => $form)
+                                        <tr>
+                                            <td>
+                                                <a href="/form/data/{{ $form['id'] }}" class="item-href">{{ $form['title'] }}</a>
+                                            </td>
+                                            <td>
+                                                {{ $form['total_viewed'] }} <i class="bi {{ ($form == 'public') ? 'bi-people' : 'bi-lock' }}"></i> <i style="opacity: 0">ii</i> {{ $form['total_respondent'] }} <i class="bi bi-database-down"></i></i>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#share-data-{{ $no }}"><i class="bi bi-share"></i></button>
+                                                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#edit-data-{{ $no }}"><i class="bi bi-pencil"></i></button>
+                                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete-data-{{ $no }}"><i class="bi bi-trash"></i></button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                             <!-- End Table with stripped rows -->
@@ -74,8 +80,7 @@
             </div>
 
             <!-- modal crud -->
-            <?php foreach ($jadwal_list as $no => $jadwal): ?>
-
+            {{-- @foreach ( as )
             <!-- edit modal -->
             <div class="modal fade" id="edit-data-<?= $no ?>" tabindex="-1">
                 <div class="modal-dialog">
@@ -128,7 +133,7 @@
                     </div>
                 </div>
             </div>
-            <?php endforeach; ?>
+            @endforeach --}}
             <!-- End Crud Modal -->
 
             <!-- Add Modal -->
@@ -156,7 +161,7 @@
                                         <div class="d-flex flex-row gap-2">
                                             <input type="text" class="form-control" id="form-add-s1-input" value="Hello World" disabled>
                                             <select class="form-control w-50" id="form-add-s1-type">
-                                                <option value="string">String</option>
+                                                <option value="text">Text</option>
                                                 <option value="number">Number</option>
                                                 <option value="file">File</option>
                                                 <option value="payment">Payment</option>
