@@ -17,4 +17,8 @@ class Template extends Model
         'id_user',
         'id_department'
     ];
+
+    public function section_list() {
+        return $this->hasMany(Section::class, 'id_template');
+    }
 }

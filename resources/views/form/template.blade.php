@@ -20,7 +20,7 @@
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Template</h1>
+            <h1>Formulir</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="../dashboard/dashboard.php">Formulir</a></li>
@@ -58,7 +58,7 @@
                                     @foreach ($form_list as $no => $form)
                                         <tr>
                                             <td>
-                                                {{ $form['title'] }}
+                                                <a href="/form/data/{{ $form['id'] }}" class="item-href">{{ $form['title'] }}</a>
                                             </td>
                                             <td>
                                                 {{ $form['total_viewed'] }} <i class="bi {{ ($form == 'public') ? 'bi-people' : 'bi-lock' }}"></i> <i style="opacity: 0">ii</i> {{ $form['total_respondent'] }} <i class="bi bi-database-down"></i></i>

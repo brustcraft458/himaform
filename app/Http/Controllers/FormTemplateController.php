@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 class FormTemplateController extends Controller
 {
     function index() {
+        //$form_list = Template::with('section_list')->get()->toArray();
         $form_list = Template::all()->toArray();
 
         return view('form.template', [
