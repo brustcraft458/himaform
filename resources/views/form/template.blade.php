@@ -50,7 +50,7 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">Judul</th>
-                                        <th scope="col">Responder</th>
+                                        <th scope="col">Aktivitas</th>
                                         <th scope="col">Aksi</th>
                                     </tr>
                                 </thead>
@@ -61,7 +61,7 @@
                                                 {{ $form['title'] }}
                                             </td>
                                             <td>
-                                                {{ $form['count_responden'] }}
+                                                {{ $form['total_viewed'] }} <i class="bi {{ ($form == 'public') ? 'bi-people' : 'bi-lock' }}"></i> <i style="opacity: 0">ii</i> {{ $form['total_respondent'] }} <i class="bi bi-database-down"></i></i>
                                             </td>
                                             <td>
                                                 <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#share-data-{{ $no }}"><i class="bi bi-share"></i></button>

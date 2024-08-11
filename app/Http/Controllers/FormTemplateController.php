@@ -15,10 +15,6 @@ class FormTemplateController extends Controller
     function index() {
         $form_list = Template::all()->toArray();
 
-        foreach ($form_list as &$form) {
-            $form['count_responden'] = Dump::where('id_template', $form['id'])->count();;
-        }
-
         return view('form.template', [
             'form_list' => $form_list
         ]);
