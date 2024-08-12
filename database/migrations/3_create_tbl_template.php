@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('tbl_template', function (Blueprint $table) {
             $table->id();
+            $table->uuid()->unique();
             $table->string('title');
             $table->string('visibility')->default('private');
             $table->unsignedBigInteger('total_viewed')->default(0);

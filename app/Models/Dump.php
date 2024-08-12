@@ -15,9 +15,21 @@ class Dump extends Model
         'id_template'
     ];
 
-    static function allCombinedData($id) {
+    static function allCombinedData($uuid_template) {
         $label_list = [];
-        $dump_list = Dump::where('id_template', $id)->get()->toArray();
+
+        // Get Template
+        $template = Template::where('uuid', $uuid_template)->first();
+        if (!$template) {
+            return [
+                'label_list' => [],
+                'dump_list' => []
+            ];
+        }
+        $template = $template->toArray();
+
+        // Get Dump
+        $dump_list = Dump::where('id_template', $template['id'])->get()->toArray();
 
         foreach ($dump_list as &$dump) {
             $data_list = Data::select('id', 'id_section', 'value')->where('id_dump', $dump['id'])->get()->toArray();
