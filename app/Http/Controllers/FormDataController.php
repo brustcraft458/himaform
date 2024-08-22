@@ -9,8 +9,8 @@ use Illuminate\Http\Request;
 
 class FormDataController extends Controller
 {
-    function index($id) {
-        $result = Dump::allCombinedData($id);
+    function index($uuid) {
+        $result = Dump::allCombinedData($uuid);
 
         return view('form.data', [
             'label_list' => $result['label_list'],

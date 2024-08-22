@@ -58,7 +58,7 @@
                                     @foreach ($form_list as $no => $form)
                                         <tr>
                                             <td>
-                                                <a href="/form/data/{{ $form['id'] }}" class="item-href">{{ $form['title'] }}</a>
+                                                <a href="/form/data/{{ $form['uuid'] }}" class="item-href">{{ $form['title'] }}</a>
                                             </td>
                                             <td>
                                                 {{ $form['total_viewed'] }} <i class="bi {{ ($form == 'public') ? 'bi-people' : 'bi-lock' }}"></i> <i style="opacity: 0">ii</i> {{ $form['total_respondent'] }} <i class="bi bi-database-down"></i></i>
